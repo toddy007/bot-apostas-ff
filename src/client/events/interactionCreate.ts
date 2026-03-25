@@ -18,7 +18,7 @@ export default class InteractionCreateEvent extends Event {
         const { customId } = interaction;
         const isButton = interaction.isButton();
 
-        switch (interaction.customId) {
+        switch (customId) {
             case 'closeTicket':
                 if (isButton) return closeButton(interaction);
             case 'selectWinner':
