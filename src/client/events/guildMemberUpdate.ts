@@ -2,7 +2,7 @@ import { Event } from '../../structure/Event';
 import { Events, GuildMember } from 'discord.js';
 import { client } from '../..';
 
-export default class ReadyEvent extends Event {
+export default class GuildMemberUpdate extends Event {
     public name = Events.GuildMemberUpdate;
 
     public async execute(oldMember: GuildMember, newMember: GuildMember) {
