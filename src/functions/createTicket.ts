@@ -19,6 +19,13 @@ export const createTicket = async (
     iceType: IceType,
     guild: Guild,
 ) => {
+    const guildDb = await client.db.guilds.findOne({ _id: guild.id });
+    if (!guildDb) return;
+    const thisTicketMediatorId = guildDb.mediators[0];
+    guildDb.mediators.splice(0);
+    guildDb.mediators.push(thisTicketMediatorId); // colocando ele no fim
+    await guildDb.save();
+
     const playersPerTeam = PlayersPerTeam[panel.battleType];
     const teamOne = players.slice(0, playersPerTeam);
     const teamTwo = players.slice(-playersPerTeam);
@@ -28,8 +35,7 @@ export const createTicket = async (
     const embed = new EmbedBuilder()
         .setTitle('Ticket de x1 | ' + panel.battleType)
         .setDescription(
-            '> Mencione um mediador para criar a sala.\n' +
-                `- **Aposta**: R$${panel.betValue},00\n` +
+            `- **Aposta**: R$${panel.betValue},00\n` +
                 `- **Tipo de Gelo:** ${iceType === IceType.Normal ? 'Normal' : 'Infinito'}`,
         )
         .addFields(
@@ -66,6 +72,16 @@ export const createTicket = async (
             {
                 id: guild.id, // id do servidor = id do everyone
                 deny: [PermissionFlagsBits.ViewChannel],
+            },
+            {
+                id: thisTicketMediatorId,
+                allow: [
+                    PermissionFlagsBits.ViewChannel,
+                    PermissionFlagsBits.SendMessages,
+                    PermissionFlagsBits.ReadMessageHistory,
+                    PermissionFlagsBits.AttachFiles,
+                    PermissionFlagsBits.EmbedLinks,
+                ],
             },
             ...playersPermissions,
         ],
@@ -106,6 +122,10 @@ export const createTicket = async (
         components: [row, rowTwo],
     });
 
+    message.reply(
+        `<@${thisTicketMediatorId}> você foi escolhido para mediar essa partida.`,
+    );
+
     await client.db.ticket.create({
         panelOriginId: panel.messageId,
         players,
@@ -115,5 +135,6 @@ export const createTicket = async (
         channelId: ticketChannel.id,
         messageId: message.id,
         createdTimestamp: Date.now(),
+        mediatorId: thisTicketMediatorId,
     });
 };

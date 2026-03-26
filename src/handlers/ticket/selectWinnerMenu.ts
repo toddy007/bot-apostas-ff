@@ -1,7 +1,6 @@
 import {
     MessageFlags,
     StringSelectMenuInteraction,
-    PermissionFlagsBits,
     ChannelType,
     Snowflake,
 } from 'discord.js';
@@ -11,16 +10,9 @@ import { WinnerTeam, BattleStatus } from '../../types/db';
 export const selectWinnerMenu = async (
     interaction: StringSelectMenuInteraction,
 ) => {
-    const { channel, guild, values, member, user } = interaction;
+    const { channel, guild, values, user } = interaction;
     if (!channel || !guild) return;
     if (channel.type !== ChannelType.GuildText) return;
-
-    if (typeof member!.permissions === 'string') return;
-    if (!member!.permissions.has(PermissionFlagsBits.Administrator))
-        return interaction.reply({
-            content: '❌・Somente Administradores podem usar isso.',
-            flags: [MessageFlags.Ephemeral],
-        });
 
     const ticket = await client.db.ticket.findOne({ channelId: channel.id }, [
         '_id',
@@ -33,9 +25,11 @@ export const selectWinnerMenu = async (
         ? ''
         : '\n-# ⚠️・Este ticket não está na minha database.';
     channel.send(
-        `⚔️・O usuário <@${user.id}> definiu o **${winnerTeam === 'teamOne' ? 'Time 1' : 'Time 2'}** ${ticket ? '(' + ticket[winnerTeam].map((playerId: Snowflake) => `<@${playerId}>`).join(' | ') + ')' : ''} como vencedor.` +
+        `⚔️・O mediador <@${user.id}> definiu o **${winnerTeam === 'teamOne' ? 'Time 1' : 'Time 2'}** ${ticket ? '(' + ticket[winnerTeam].map((playerId: Snowflake) => `<@${playerId}>`).join(' | ') + ')' : ''} como vencedor.` +
             complement,
     );
+
+    channel.send(`<@${user.id}> faça o pagamento ao time vencedor.`);
 
     if (ticket) {
         ticket.status = BattleStatus.Finished;

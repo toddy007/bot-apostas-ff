@@ -13,7 +13,9 @@ export const detectInactiveTickets = async () => {
     if (tickets.length === 0) return;
 
     for (const ticket of tickets) {
-        const channel = await client.channels.fetch(ticket.channelId);
+        const channel = await client.channels
+            .fetch(ticket.channelId)
+            .catch(() => null);
         if (channel && channel.type === ChannelType.GuildText) {
             channel
                 .send(

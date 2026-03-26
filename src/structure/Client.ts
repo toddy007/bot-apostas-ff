@@ -2,7 +2,7 @@ import { Client as DiscordClient, Collection } from 'discord.js';
 import globSync from 'tiny-glob';
 import { Command } from '../types/global';
 import { Config } from '../client/Config';
-import { panelModel, ticketModel } from '../database/modelsExport';
+import { panelModel, ticketModel, guildModel } from '../database/modelsExport';
 
 export class Client<R extends boolean> extends DiscordClient<R> {
     public commands = new Collection<string, Command>();
@@ -42,6 +42,7 @@ export class Client<R extends boolean> extends DiscordClient<R> {
         return {
             panel: panelModel,
             ticket: ticketModel,
+            guilds: guildModel,
         };
     }
 }

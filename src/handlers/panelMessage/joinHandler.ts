@@ -52,6 +52,27 @@ export const joinHandler = async (
                     '⚠️・Eu não tenho permissão de `gerenciar canais` neste servidor, portanto, não posso criar o ticket, resetando a fila...\n-# Avise um Administrador.',
                 flags: [MessageFlags.Ephemeral],
             });
+
+            panel[queueType] = [];
+            return;
+        }
+
+        const guildDb = await client.db.guilds.findOne({ _id: guild.id });
+        if (!guildDb) return;
+        const mediatorRole =
+            guildDb.mediatorRoleId &&
+            (await guild.roles.fetch(guildDb.mediatorRoleId).catch(() => null));
+        if (
+            !mediatorRole ||
+            guildDb.mediators.length === 0 ||
+            mediatorRole.members.size === 0
+        ) {
+            interaction.reply({
+                content:
+                    '⚠️・Este servidor **não tem um cargo de mediador configurado** e/ou **não tem mediadores disponíveis**, resetando a fila...\n-# Avise um Administrador.',
+                flags: [MessageFlags.Ephemeral],
+            });
+
             panel[queueType] = [];
             return;
         }

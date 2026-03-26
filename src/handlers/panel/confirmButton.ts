@@ -46,7 +46,9 @@ export const confirmButtonHandler = async (interaction: ButtonInteraction) => {
             flags: [MessageFlags.Ephemeral],
         });
 
-    const channelToSend = await client.channels.fetch(channelToSendId);
+    const channelToSend = await client.channels
+        .fetch(channelToSendId)
+        .catch(() => null);
     if (!channelToSend)
         return interaction.reply({
             content: '❌・Eu não encontrei o canal selecionado.',

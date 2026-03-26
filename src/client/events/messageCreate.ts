@@ -14,6 +14,12 @@ export default class MessageCreateEvent extends Event {
         )
             return;
 
+        const guildDb = await client.db.guilds.findOne(
+            { _id: message.guildId },
+            ['_id'],
+        );
+        if (!guildDb) await client.db.guilds.create({ _id: message.guildId });
+
         const clientMention = '<@' + client.user.id + '>';
         const { prefix } = client.config;
         if (message.content.startsWith(clientMention))

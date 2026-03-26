@@ -14,6 +14,7 @@ const ticketSchema = new Schema<TicketSchema>(
         messageId: { type: String, required: true },
         createdTimestamp: { type: Number, required: true },
         closed: { type: Boolean, required: true, default: false },
+        mediatorId: { type: String, required: true },
     },
     { versionKey: false },
 );

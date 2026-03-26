@@ -4,6 +4,11 @@ export interface BaseSchema {
     _id: string;
 }
 
+export interface GuildSchema extends BaseSchema {
+    mediatorRoleId?: Snowflake;
+    mediators: Snowflake[];
+}
+
 export interface PanelSchema extends BaseSchema {
     messageId: Snowflake;
     battleType: BattleType;
@@ -31,6 +36,7 @@ export interface TicketSchema extends BaseSchema {
     messageId: Snowflake;
     createdTimestamp: number;
     closed: boolean;
+    mediatorId: Snowflake;
 }
 
 export enum BattleStatus {

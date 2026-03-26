@@ -1,5 +1,5 @@
 import { Event } from '../../structure/Event';
-import { Events, Interaction } from 'discord.js';
+import { Events, Interaction, MessageFlags } from 'discord.js';
 import { confirmButtonHandler } from '../../handlers/panel/confirmButton';
 import { cancelButtonHandler } from '../../handlers/panel/cancelButton';
 import { joinHandler } from '../../handlers/panelMessage/joinHandler';
@@ -9,6 +9,7 @@ import { selectWinnerMenu } from '../../handlers/ticket/selectWinnerMenu';
 import { IceType } from '../../types/db';
 import { editPanelDataHandler } from '../../handlers/panel/editPanelDataHandler';
 import { CustomIds } from '../../types/global';
+import { client } from '../..';
 
 export default class InteractionCreateEvent extends Event {
     public name = Events.InteractionCreate;
@@ -22,8 +23,19 @@ export default class InteractionCreateEvent extends Event {
             case 'closeTicket':
                 if (isButton) return closeButton(interaction);
             case 'selectWinner':
-                if (interaction.isStringSelectMenu())
+                if (interaction.isStringSelectMenu()) {
+                    const ticketData = await client.db.ticket.findOne({
+                        messageId: interaction.message.id,
+                    });
+                    if (!ticketData) return;
+                    if (ticketData.mediatorId !== interaction.user.id)
+                        return interaction.reply({
+                            content: '❌・Você não é o mediador desta partida.',
+                            flags: [MessageFlags.Ephemeral],
+                        });
+
                     return selectWinnerMenu(interaction);
+                }
         }
 
         if (isButton && customId.startsWith('joinIce'))
