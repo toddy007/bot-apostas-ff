@@ -43,3 +43,9 @@ Vou fazer o mesmo que fiz acima.
 - Adicione a URL copiada em `.env` no `MONGODB`.
 - Substitua o `<db_password>` pela senha que você copiou anteriormente.
 - Pronto.
+## 4. Iniciando o Bot
+- Após concluir todos os passos acima, agora podemos iniciar o bot.
+- No terminal do dispositivo que você tiver usando, digite `npm start`, na pasta do seu projeto.
+- Se você não tiver errado nada o bot iniciará normalmente.
+## 5. Hospedando
+...
