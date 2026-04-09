@@ -45,6 +45,7 @@ Vou fazer o mesmo que fiz acima.
 - Pronto.
 ## 4. Iniciando o Bot
 - Após concluir todos os passos acima, agora podemos iniciar o bot.
+- Use `npm i` no terminal para baixar os pacotes ( só precisa fazer uma vez ).
 - No terminal do dispositivo que você tiver usando, digite `npm start`, na pasta do seu projeto.
 - Se você não tiver errado nada o bot iniciará normalmente.
 ## 5. Hospedando
